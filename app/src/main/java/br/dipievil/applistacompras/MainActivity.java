@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -18,7 +19,8 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<Product> products;
     private EditText etName, etQtd;
     private ListView lvProducts;
-    private ArrayAdapter<Product> adapter;
+    //private ArrayAdapter<Product> adapter;
+    private ProductAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,12 +31,19 @@ public class MainActivity extends AppCompatActivity {
         etName = findViewById(R.id.etName);
         etQtd = findViewById(R.id.etQtd);
         lvProducts = findViewById(R.id.lvProducts);
-        adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, products);
+        adapter = new ProductAdapter(this, products);
         lvProducts.setAdapter(adapter);
+
+        lvProducts.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+                delete(i);
+                return true;
+            }
+        });
     }
 
     public void addItem(View view){
-        // Toast.makeText(this, "Oieam", Toast.LENGTH_SHORT).show();
 
         String name = etName.getText().toString();
 
@@ -66,6 +75,9 @@ public class MainActivity extends AppCompatActivity {
                 adapter.notifyDataSetChanged();
             }
         });
+        alert.setNegativeButton("Não faz nada", ((dialogInterface, i) -> {
+            Toast.makeText(this,"Não fez nada",Toast.LENGTH_SHORT).show();
+        }));
         alert.show();
     }
 }
